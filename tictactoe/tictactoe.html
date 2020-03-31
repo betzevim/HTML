@@ -1,0 +1,124 @@
+<!DOCTYPE html>
+<html>
+<head>
+
+<title>tictactoe</title>
+<style type="text/css">
+	img{border: 1px solid black}
+</style>
+
+</head>
+<body>
+
+<img src="images/whitespace.png" id="11" attr-type="whitespace">
+<img src="images/whitespace.png" id="12" attr-type="whitespace">
+<img src="images/whitespace.png" id="13" attr-type="whitespace">
+<br>
+<img src="images/whitespace.png" id="21" attr-type="whitespace">
+<img src="images/whitespace.png" id="22" attr-type="whitespace">
+<img src="images/whitespace.png" id="23" attr-type="whitespace">
+<br>
+<img src="images/whitespace.png" id="31" attr-type="whitespace">
+<img src="images/whitespace.png" id="32" attr-type="whitespace">
+<img src="images/whitespace.png" id="33" attr-type="whitespace">
+<br>
+
+<button onclick="reset();">Reset</button>
+
+<h3 id="who_wins"></h3>
+
+<script>
+	var xo = "x";
+
+	var turnsTaken = 0;
+
+	document.getElementById("11").onclick = function(){
+		clicked(11);
+	};
+	document.getElementById("12").onclick = function(){
+		clicked(12);
+	};
+	document.getElementById("13").onclick = function(){
+		clicked(13);
+	};
+	document.getElementById("21").onclick = function(){
+		clicked(21);
+	};
+	document.getElementById("22").onclick = function(){
+		clicked(22);
+	};
+	document.getElementById("23").onclick = function(){
+		clicked(23);
+	};
+	document.getElementById("31").onclick = function(){
+		clicked(31);
+	};
+	document.getElementById("32").onclick = function(){
+		clicked(32);
+	};
+	document.getElementById("33").onclick = function(){
+		clicked(33);
+	};
+
+	function clicked(id) {
+		if (document.getElementById(id).getAttribute("attr-type") == "whitespace") {
+			if (turnsTaken == 9) {
+				document.getElementById("who_wins").innerHTML = "The game is over, please reset";
+			} else {
+				turnsTaken ++;
+				document.getElementById(id).src = "images/" + xo + ".png";
+				document.getElementById(id).setAttribute("attr-type", xo);
+				checkWin(xo);
+				if (xo == "x") {
+					xo = "o";
+				} else {
+					xo = "x";
+				}
+			}
+		}
+
+	}
+
+	function checkWin(type) {
+		checkRow(type, [11, 12, 13]); // Row
+		checkRow(type, [21, 22, 23]); // Row
+		checkRow(type, [31, 32, 33]); // Row
+
+		checkRow(type, [11, 21, 31]); // Column
+		checkRow(type, [12, 22, 32]); // Column
+		checkRow(type, [13, 23, 33]); // Column
+		
+		checkRow(type, [11, 22, 33]); // Diagonal
+		checkRow(type, [13, 22, 31]); // Diagonal
+	}
+
+	function checkRow(type, row) {
+		if (!(type == "x" || type == "o")) {
+			return;
+		}
+		if (document.getElementById(row[0]).getAttribute("attr-type") == type) {
+			if (document.getElementById(row[1]).getAttribute("attr-type") == type) {
+				if (document.getElementById(row[2]).getAttribute("attr-type") == type) {
+					document.getElementById("who_wins").innerHTML = type.toUpperCase() + " wins!";
+					turnsTaken = 9;
+				}
+			}
+		}
+	}
+
+	function reset() {
+		xo = "x";
+		turnsTaken = 0;
+		document.getElementById("who_wins").innerHTML = "";
+		for (var a = 1; a <= 3; a++) {
+			for (var b = 1; b <= 3; b++) {
+				document.getElementById(a.toString() + b.toString()).src = "images/whitespace.png";
+				document.getElementById(a.toString() + b.toString()).setAttribute("attr-type", "whitespace");
+			}
+		}
+	}
+
+</script>
+
+</body>
+</html>
