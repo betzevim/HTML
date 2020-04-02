@@ -39,33 +39,13 @@
 
 	var turnsTaken = 0;
 
-	document.getElementById("11").onclick = function(){
-		clicked(11);
-	};
-	document.getElementById("12").onclick = function(){
-		clicked(12);
-	};
-	document.getElementById("13").onclick = function(){
-		clicked(13);
-	};
-	document.getElementById("21").onclick = function(){
-		clicked(21);
-	};
-	document.getElementById("22").onclick = function(){
-		clicked(22);
-	};
-	document.getElementById("23").onclick = function(){
-		clicked(23);
-	};
-	document.getElementById("31").onclick = function(){
-		clicked(31);
-	};
-	document.getElementById("32").onclick = function(){
-		clicked(32);
-	};
-	document.getElementById("33").onclick = function(){
-		clicked(33);
-	};
+	for (var a = 1; a <= 3; a++) {
+		for (var b = 1; b <= 3; b++) {
+			document.getElementById(a + b).onclick = function(){
+				clicked(a + b);
+			}
+		}
+	}
 
 	function clicked(id) {
 		if (document.getElementById(id).getAttribute("attr-type") == "whitespace") {
