@@ -41,20 +41,20 @@
 
 	for (var a = 1; a <= 3; a++) {
 		for (var b = 1; b <= 3; b++) {
-			document.getElementById(a + b).onclick = function(){
-				clicked(a + b);
-			};
+			var my_id = "" + a + b;
+			document.getElementById(my_id).onclick = clicked;
 		}
 	}
 
-	function clicked(id) {
-		if (document.getElementById(id).getAttribute("attr-type") == "whitespace") {
+	function clicked(e) {
+		console.log(e);
+		if (e.target.getAttribute("attr-type") == "whitespace") {
 			if (turnsTaken == 9) {
 				document.getElementById("who_wins").innerHTML = "The game is over, please reset";
 			} else {
 				turnsTaken ++;
-				document.getElementById(id).src = "images/" + xo + ".png";
-				document.getElementById(id).setAttribute("attr-type", xo);
+				e.target.src = "images/" + xo + ".png";
+				e.target.setAttribute("attr-type", xo);
 				checkWin(xo);
 				if (xo == "x") {
 					xo = "o";
