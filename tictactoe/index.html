@@ -47,7 +47,6 @@
 	}
 
 	function clicked(e) {
-		console.log(e);
 		if (e.target.getAttribute("attr-type") == "whitespace") {
 			if (turnsTaken == 9) {
 				document.getElementById("who_wins").innerHTML = "The game is over, please reset";
