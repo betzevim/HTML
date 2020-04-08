@@ -85,7 +85,11 @@
 		if (document.getElementById(row[0]).getAttribute("attr-type") == type) {
 			if (document.getElementById(row[1]).getAttribute("attr-type") == type) {
 				if (document.getElementById(row[2]).getAttribute("attr-type") == type) {
-					document.getElementById("who_wins").innerHTML = type.toUpperCase() + " wins!";
+					var win_msg = type.toUpperCase() + " wins!";
+					if (type == "o") {
+						win_msg += "<br>Also, X is clearly very bad at this";
+					}
+					document.getElementById("who_wins").innerHTML = win_msg;
 					turnsTaken = 9;
 				}
 			}
@@ -95,6 +99,7 @@
 	function reset() {
 		xo = "x";
 		turnsTaken = 0;
+		win_msg = "";
 		document.getElementById("who_wins").innerHTML = "";
 		for (var a = 1; a <= 3; a++) {
 			for (var b = 1; b <= 3; b++) {
