@@ -15,28 +15,24 @@ var width = 10;
 
 var board = [];
 
-for (var h = 0; h<height; h++) {
-	for (var w = 0; w<width; w++) {
-		board["" + a + b] = document.createElement("img");
-		document.appendChild(board["" + a + b]);
+for (var a = 0; a<height; a++) {
+	for (var b = 0; b<width; b++) {
+		var image = document.createElement("img");
+		image.src = "images/unknown.png";
+		image.alt = "u";
+		image.width = "20";
+		image.height = "20";
+		image.onclick = "onclick()";
+		board["" + a + b] = image;
+		document.body.appendChild(board["" + a + b]);
 	}
-	document.appendChild("br");
+	var br = document.createElement("br");
+	document.body.appendChild(br);
 }
 
-// Add bombs
-for (var a = 0; a<10; a++) {
-	for (var b = 0; b<10; b++) {
-		var rand = Math.floor(Math.random()*10);
-		if (rand == 0) {
-			board[a][b] = -1;
-//			console.log(a + "-" + b);
-//			console.log(board[a][b]);
-		}
-	}
-}
 
 function onclick(e) {
-
+	console.log(e);
 }
 
 </script>
