@@ -6,35 +6,61 @@
 <body>
 
 <h1>Coming soon!</h1>
+<p>Please ignore and/or experiment with anything on this page</p>
 
 <script>
 
 // Build a multidimensional array
 var height = 10;
 var width = 10;
+var num_bombs = 0;
+
 
 var board = [];
 
 for (var a = 0; a<height; a++) {
+	board[a] = [];
 	for (var b = 0; b<width; b++) {
 		var image = document.createElement("img");
+		image.id = "" + a + b;
 		image.src = "images/unknown.png";
-		image.alt = "u";
 		image.width = "20";
 		image.height = "20";
-		image.onclick = "onclick()";
-		board["" + a + b] = image;
-		document.body.appendChild(board["" + a + b]);
+		image.onclick = onclick;
+		image.attr_type = 0;
+		image.oncontextmenu = onclick;
+		if (Math.floor(Math.random() * 10) == 0) { // One in ten odds
+			image.attr_type = "bomb";
+			num_bombs ++;
+			console.log(num_bombs);
+		}
+		board[a][b] = image;
+		document.body.appendChild(board[a][b]);
 	}
 	var br = document.createElement("br");
 	document.body.appendChild(br);
 }
 
+for (var a = 0; a<height; a++) {
+	for (var b = 0; b<width; b++) {
+		var square = board[a][b];
+		if (square.attr_type === "bomb"){
+
+			if (board[a - 1][b - 1] !== undefined | board[a - 1][b - 1].attr_type !== "bomb") {
+				board[a - 1][b - 1].attr_type ++;
+				console.log(board[a - 1][b - 1].attr_type);
+			}
+
+		}
+	}
+}
+
+
 
 function onclick(e) {
 	console.log(e);
+	return false; // To prevent the context menu from appearing
 }
-
 </script>
 </body>
 </html>
