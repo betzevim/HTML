@@ -32,7 +32,7 @@ for (var a = 0; a<height; a++) {
 		if (Math.floor(Math.random() * 10) == 0) { // One in ten odds
 			image.attr_type = "bomb";
 			num_bombs ++;
-			console.log(num_bombs);
+//			console.log(num_bombs);
 		}
 		board[a][b] = image;
 		document.body.appendChild(board[a][b]);
@@ -45,12 +45,26 @@ for (var a = 0; a<height; a++) {
 	for (var b = 0; b<width; b++) {
 		var square = board[a][b];
 		if (square.attr_type === "bomb"){
+//			Check the edges
+			incrementSquare(a - 1, b);
+			incrementSquare(a + 1, b);
+			incrementSquare(a, b - 1);
+			incrementSquare(a, b + 1);
+//			Check the corners
+			incrementSquare(a - 1, b - 1);
+			incrementSquare(a + 1, b + 1);
+			incrementSquare(a - 1, b + 1);
+			incrementSquare(a + 1, b - 1);
+		}
+	}
+}
 
-			if (board[a - 1][b - 1] !== undefined | board[a - 1][b - 1].attr_type !== "bomb") {
-				board[a - 1][b - 1].attr_type ++;
-				console.log(board[a - 1][b - 1].attr_type);
+function incrementSquare (a, b) {
+	if (board[a] !== undefined) {
+		if (board[a][b] !== undefined){
+			if (board[a][b].attr_type !== "bomb") {
+				board[a][b].attr_type ++;
 			}
-
 		}
 	}
 }
@@ -58,7 +72,21 @@ for (var a = 0; a<height; a++) {
 
 
 function onclick(e) {
-	console.log(e);
+	var unRegex = /unknown\.png/;
+	var flRegex = /flag\.png/;
+
+	if (e.button == 0) { // Left click
+		console.log("LEFT CLICK");
+	} else { // Right click
+		console.log("RIGHT CLICK");
+		console.log(e.target.currentSrc);
+		if (e.target.currentSrc.match(unRegex)) {
+			console.log("ITWORKS");
+			e.target.src = "images/flag.png";
+		} else if (e.target.currentSrc.match(flRegex)) {
+			e.target.src = "images/unknown.png";
+		}
+	}
 	return false; // To prevent the context menu from appearing
 }
 </script>
