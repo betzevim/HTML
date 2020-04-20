@@ -89,7 +89,6 @@ function onclick (e) {
 
 function revealSquare (target) {
 	if (target == undefined) {
-		console.log("ITWORKZ");
 		return;
 	}
 	if (target.src.match(/flag\.png/)) {
@@ -100,39 +99,29 @@ function revealSquare (target) {
 //		gameOver();
 		return;
 	}
+	if (!(target.src.match(/unknown\.png/))) {
+		return;
+	}
 	if (target.attr_type == 0) {
 		var id = target.id;
-		var a = id[0];
-		var b = id[1];
+		var a = parseInt(id[0]);
+		var b = parseInt(id[1]);
 		var foo = "";
 		var squareToReveal = "";
 
-		foo = "" + (a - 1) + b;
-		squareToReveal = document.getElementByID(foo);
-		revealSquare(squareToReveal);
-		foo = "" + (a + 1) + b;
-		squareToReveal = document.getElementByID(foo);
-		revealSquare(squareToReveal);
-		foo = "" + a + (b - 1);
-		squareToReveal = document.getElementByID(foo);
-		revealSquare(squareToReveal);
-		foo = "" + a + (b + 1);
-		squareToReveal = document.getElementByID(foo);
-		revealSquare(squareToReveal);
+		target.src = "images/0.png";
 
-		foo = "" + (a - 1) + (b - 1);
-		squareToReveal = document.getElementByID(foo);
-		revealSquare(squareToReveal);
-		foo = "" + (a + 1) + (b + 1);
-		squareToReveal = document.getElementByID(foo);
-		revealSquare(squareToReveal);
-		foo = "" + (a - 1) + (b + 1);
-		squareToReveal = document.getElementByID(foo);
-		revealSquare(squareToReveal);
-		foo = "" + (a + 1) + (b - 1);
-		squareToReveal = document.getElementByID(foo);
-		revealSquare(squareToReveal);
 
+
+		revealSquare(document.getElementById("" + (a - 1) + b));
+		revealSquare(document.getElementById("" + (a + 1) + b));
+		revealSquare(document.getElementById("" + a + (b - 1)));
+		revealSquare(document.getElementById("" + a + (b + 1)));
+
+		revealSquare(document.getElementById("" + (a - 1) + (b - 1)));
+		revealSquare(document.getElementById("" + (a + 1) + (b + 1)));
+		revealSquare(document.getElementById("" + (a - 1) + (b + 1)));
+		revealSquare(document.getElementById("" + (a + 1) + (b - 1)));
 		return;
 	}
 	if (target.attr_type > 0 && target.attr_type < 9) {
@@ -140,6 +129,9 @@ function revealSquare (target) {
 		return;
 	}
 }
+
+
+
 /*
 If they click on...:
 An unknown
