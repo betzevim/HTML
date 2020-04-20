@@ -69,26 +69,86 @@ function incrementSquare (a, b) {
 	}
 }
 
-
-
-function onclick(e) {
+function onclick (e) {
 	var unRegex = /unknown\.png/;
 	var flRegex = /flag\.png/;
+	var boRegex = /bomb\.png/;
+
 
 	if (e.button == 0) { // Left click
-		console.log("LEFT CLICK");
+		revealSquare(e.target);
 	} else { // Right click
-		console.log("RIGHT CLICK");
-		console.log(e.target.currentSrc);
-		if (e.target.currentSrc.match(unRegex)) {
-			console.log("ITWORKS");
+		if (e.target.src.match(unRegex)) {
 			e.target.src = "images/flag.png";
-		} else if (e.target.currentSrc.match(flRegex)) {
+		} else if (e.target.src.match(flRegex)) {
 			e.target.src = "images/unknown.png";
 		}
 	}
 	return false; // To prevent the context menu from appearing
 }
+
+function revealSquare (target) {
+	if (target == undefined) {
+		console.log("ITWORKZ");
+		return;
+	}
+	if (target.src.match(/flag\.png/)) {
+		return;
+	}
+	if (target.attr_type == "bomb") {
+		target.src = "images/bomb.png";
+//		gameOver();
+		return;
+	}
+	if (target.attr_type == 0) {
+		var id = target.id;
+		var a = id[0];
+		var b = id[1];
+		var foo = "";
+		var squareToReveal = "";
+
+		foo = "" + (a - 1) + b;
+		squareToReveal = document.getElementByID(foo);
+		revealSquare(squareToReveal);
+		foo = "" + (a + 1) + b;
+		squareToReveal = document.getElementByID(foo);
+		revealSquare(squareToReveal);
+		foo = "" + a + (b - 1);
+		squareToReveal = document.getElementByID(foo);
+		revealSquare(squareToReveal);
+		foo = "" + a + (b + 1);
+		squareToReveal = document.getElementByID(foo);
+		revealSquare(squareToReveal);
+
+		foo = "" + (a - 1) + (b - 1);
+		squareToReveal = document.getElementByID(foo);
+		revealSquare(squareToReveal);
+		foo = "" + (a + 1) + (b + 1);
+		squareToReveal = document.getElementByID(foo);
+		revealSquare(squareToReveal);
+		foo = "" + (a - 1) + (b + 1);
+		squareToReveal = document.getElementByID(foo);
+		revealSquare(squareToReveal);
+		foo = "" + (a + 1) + (b - 1);
+		squareToReveal = document.getElementByID(foo);
+		revealSquare(squareToReveal);
+
+		return;
+	}
+	if (target.attr_type > 0 && target.attr_type < 9) {
+		target.src = "images/" + target.attr_type + ".png";
+		return;
+	}
+}
+/*
+If they click on...:
+An unknown
+
+A bomb
+A 0
+A 1-9
+*/
+
 </script>
 </body>
 </html>
