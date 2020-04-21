@@ -7,54 +7,56 @@
 
 <h1>Coming soon!</h1>
 <p>Please ignore and/or experiment with anything on this page</p>
-
+<button onclick="newGame(29, 15);">New Game</button>
+<br>
 <script>
 
 // Build a multidimensional array
-var height = 10;
-var width = 10;
-var num_bombs = 0;
-
 
 var board = [];
+newGame(29, 15)
+function newGame (width, height) {
 
-for (var a = 0; a<height; a++) {
-	board[a] = [];
-	for (var b = 0; b<width; b++) {
-		var image = document.createElement("img");
-		image.id = "" + a + b;
-		image.src = "images/unknown.png";
-		image.width = "20";
-		image.height = "20";
-		image.onclick = onclick;
-		image.attr_type = 0;
-		image.oncontextmenu = onclick;
-		if (Math.floor(Math.random() * 10) == 0) { // One in ten odds
-			image.attr_type = "bomb";
-			num_bombs ++;
-//			console.log(num_bombs);
+	var num_bombs = 0;
+	board = [];
+
+	for (var a = 0; a<height; a++) {
+		board[a] = [];
+		for (var b = 0; b<width; b++) {
+			var image = document.createElement("img");
+			image.id = a + ":" + b;
+			image.src = "images/unknown.png";
+			image.width = "20";
+			image.height = "20";
+			image.onclick = onclick;
+			image.attr_type = 0;
+			image.oncontextmenu = onclick;
+			if (Math.floor(Math.random() * 10) == 0) { // One in ten odds
+				image.attr_type = "bomb";
+				num_bombs ++;
+			}
+			board[a][b] = image;
+			document.body.appendChild(board[a][b]);
 		}
-		board[a][b] = image;
-		document.body.appendChild(board[a][b]);
+		var br = document.createElement("br");
+		document.body.appendChild(br);
 	}
-	var br = document.createElement("br");
-	document.body.appendChild(br);
-}
 
-for (var a = 0; a<height; a++) {
-	for (var b = 0; b<width; b++) {
-		var square = board[a][b];
-		if (square.attr_type === "bomb"){
-//			Check the edges
-			incrementSquare(a - 1, b);
-			incrementSquare(a + 1, b);
-			incrementSquare(a, b - 1);
-			incrementSquare(a, b + 1);
-//			Check the corners
-			incrementSquare(a - 1, b - 1);
-			incrementSquare(a + 1, b + 1);
-			incrementSquare(a - 1, b + 1);
-			incrementSquare(a + 1, b - 1);
+	for (var a = 0; a<height; a++) {
+		for (var b = 0; b<width; b++) {
+			var square = board[a][b];
+			if (square.attr_type === "bomb"){
+	//			Check the edges
+				incrementSquare(a - 1, b);
+				incrementSquare(a + 1, b);
+				incrementSquare(a, b - 1);
+				incrementSquare(a, b + 1);
+	//			Check the corners
+				incrementSquare(a - 1, b - 1);
+				incrementSquare(a + 1, b + 1);
+				incrementSquare(a - 1, b + 1);
+				incrementSquare(a + 1, b - 1);
+			}
 		}
 	}
 }
@@ -103,25 +105,25 @@ function revealSquare (target) {
 		return;
 	}
 	if (target.attr_type == 0) {
+
 		var id = target.id;
-		var a = parseInt(id[0]);
-		var b = parseInt(id[1]);
+		var ids = id.split(":");
+		var a = parseInt(ids[0]);
+		var b = parseInt(ids[1]);
 		var foo = "";
 		var squareToReveal = "";
 
 		target.src = "images/0.png";
 
+		revealSquare(document.getElementById((a - 1) + ":" + b));
+		revealSquare(document.getElementById((a + 1) + ":" + b));
+		revealSquare(document.getElementById(a + ":" + (b - 1)));
+		revealSquare(document.getElementById(a + ":" + (b + 1)));
 
-
-		revealSquare(document.getElementById("" + (a - 1) + b));
-		revealSquare(document.getElementById("" + (a + 1) + b));
-		revealSquare(document.getElementById("" + a + (b - 1)));
-		revealSquare(document.getElementById("" + a + (b + 1)));
-
-		revealSquare(document.getElementById("" + (a - 1) + (b - 1)));
-		revealSquare(document.getElementById("" + (a + 1) + (b + 1)));
-		revealSquare(document.getElementById("" + (a - 1) + (b + 1)));
-		revealSquare(document.getElementById("" + (a + 1) + (b - 1)));
+		revealSquare(document.getElementById((a - 1) + ":" + (b - 1)));
+		revealSquare(document.getElementById((a + 1) + ":" + (b + 1)));
+		revealSquare(document.getElementById((a - 1) + ":" + (b + 1)));
+		revealSquare(document.getElementById((a + 1) + ":" + (b - 1)));
 		return;
 	}
 	if (target.attr_type > 0 && target.attr_type < 9) {
@@ -129,17 +131,6 @@ function revealSquare (target) {
 		return;
 	}
 }
-
-
-
-/*
-If they click on...:
-An unknown
-
-A bomb
-A 0
-A 1-9
-*/
 
 </script>
 </body>
