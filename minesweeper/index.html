@@ -2,20 +2,30 @@
 <html>
 <head>
 	<title>Minesweeper</title>
+	<style type="text/css"> 
+		body {
+			line-height: 0;
+		}
+	</style>
 </head>
 <body>
 
+<button onclick="newGame(width, height)">hi</button>
 <br>
+
 <script>
 
 // Build a multidimensional array
-
+var width = 29;
+var height = 15;
 var board = [];
-newGame(29, 15)
+newGame(29, 15);
+
 function newGame (width, height) {
 
+	deleteBoard(board);
+
 	var num_bombs = 0;
-	board = [];
 
 	for (var a = 0; a<height; a++) {
 		board[a] = [];
@@ -28,7 +38,7 @@ function newGame (width, height) {
 			image.onclick = onclick;
 			image.attr_type = 0;
 			image.oncontextmenu = onclick;
-			if (Math.floor(Math.random() * 10) == 0) { // One in ten odds
+			if (Math.floor(Math.random() * 5) == 0) { // One in ten odds
 				image.attr_type = "bomb";
 				num_bombs ++;
 			}
@@ -38,6 +48,8 @@ function newGame (width, height) {
 		var br = document.createElement("br");
 		document.body.appendChild(br);
 	}
+
+	console.log(num_bombs);
 
 	for (var a = 0; a<height; a++) {
 		for (var b = 0; b<width; b++) {
@@ -126,6 +138,15 @@ function revealSquare (target) {
 	if (target.attr_type > 0 && target.attr_type < 9) {
 		target.src = "images/" + target.attr_type + ".png";
 		return;
+	}
+}
+
+function deleteBoard (board) {
+	for (var row of board) {
+		for (var square of row) {
+			console.log(square.Id);
+			square.parentNode.removeChild(square);
+		}
 	}
 }
 
