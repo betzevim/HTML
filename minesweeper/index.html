@@ -3,27 +3,40 @@
 <head>
 	<title>Minesweeper</title>
 	<style type="text/css"> 
-		body {
+		div {
 			line-height: 0;
 		}
 	</style>
 </head>
 <body>
 
-<button onclick="newGame(width, height)">hi</button>
+<form>
+	<label for="width">Width:</label><br>
+	<input type="text" id="width" name="width" value="30"><br>
+	<label for="height">Height:</label><br>
+	<input type="text" id="height" name="height" value="16"><br>
+</form>
 <br>
-
+<button onclick="newGame();">New Game</button>
+<br>
+<br>
+<div id="board"></div>
 <script>
 
 // Build a multidimensional array
 var width = 29;
 var height = 15;
 var board = [];
-newGame(29, 15);
+newGame();
 
-function newGame (width, height) {
+function newGame () {
 
 	deleteBoard(board);
+
+	var divBoard = document.getElementById("board");
+
+	width = document.getElementById("width").value;
+	height = document.getElementById("height").value;
 
 	var num_bombs = 0;
 
@@ -43,10 +56,10 @@ function newGame (width, height) {
 				num_bombs ++;
 			}
 			board[a][b] = image;
-			document.body.appendChild(board[a][b]);
+			divBoard.appendChild(board[a][b]);
 		}
 		var br = document.createElement("br");
-		document.body.appendChild(br);
+		divBoard.appendChild(br);
 	}
 
 	console.log(num_bombs);
@@ -99,52 +112,122 @@ function onclick (e) {
 }
 
 function revealSquare (target) {
-	if (target == undefined) {
+
+	if (target == undefined) { // This handles when there's a zero next to the edge, and it tries to reveal a nonexistent location
 		return;
 	}
-	if (target.src.match(/flag\.png/)) {
+
+	var type = target.attr_type;
+	var src = target.src;
+	var id = target.id;
+	var ids = id.split(":");
+	var a = parseInt(ids[0]);
+	var b = parseInt(ids[1]);
+
+	if (src.match(/flag\.png/)) { // This handles when you click on a flag
 		return;
+	}
+	if (type == "bomb") { // This handles when you click on a bomb
+//		gameOver(target);
+		target.src = "images/bomb.png";
+		return;
+	}
+	if (src.match(/.*unknown\.png/)) {
+		if (type == 0) {
+			target.src = "images/0.png";
+
+			revealSquare(document.getElementById((a - 1) + ":" + b));
+			revealSquare(document.getElementById((a + 1) + ":" + b));
+			revealSquare(document.getElementById(a + ":" + (b - 1)));
+			revealSquare(document.getElementById(a + ":" + (b + 1)));
+
+			revealSquare(document.getElementById((a - 1) + ":" + (b - 1)));
+			revealSquare(document.getElementById((a + 1) + ":" + (b + 1)));
+			revealSquare(document.getElementById((a - 1) + ":" + (b + 1)));
+			revealSquare(document.getElementById((a + 1) + ":" + (b - 1)));
+		} else {
+			target.src = "images/" + type + ".png";
+		}
+	}
+
+
+	var surroundingSquares = [
+		document.getElementById((a - 1) + ":" + b),
+		document.getElementById((a + 1) + ":" + b),
+		document.getElementById(a + ":" + (b - 1)),
+		document.getElementById(a + ":" + (b + 1)),
+
+		document.getElementById((a - 1) + ":" + (b - 1)),
+		document.getElementById((a + 1) + ":" + (b + 1)),
+		document.getElementById((a - 1) + ":" + (b + 1)),
+		document.getElementById((a + 1) + ":" + (b - 1))
+	];
+
+	var flaggedBombs = 0;
+	var wronglyFlagged = false;
+
+	console.log(surroundingSquares);
+
+	for (square in surroundingSquares) {
+		var result = checkFlag(surroundingSquares[square]);
+		switch (result) {
+			case ("YY"):
+				flaggedBombs ++;
+				break;
+			case ("YN"):
+				flaggedBombs ++;
+				wronglyFlagged = true;
+				break;
+			case ("NY"):
+				flaggedBombs ++;
+				wronglyFlagged = true;
+				break;
+			case ("NN"):
+			break;
+		}
+	}
+
+
+	if (flaggedBombs == src.match(/.*(.)\.png/)[1]) {
+		if (wronglyFlagged) {
+//			gameOver();
+		} else if (!(target.attr_revealed)) {
+			target.attr_revealed = true;
+			revealSquare(document.getElementById((a - 1) + ":" + b));
+			revealSquare(document.getElementById((a + 1) + ":" + b));
+			revealSquare(document.getElementById(a + ":" + (b - 1)));
+			revealSquare(document.getElementById(a + ":" + (b + 1)));
+
+			revealSquare(document.getElementById((a - 1) + ":" + (b - 1)));
+			revealSquare(document.getElementById((a + 1) + ":" + (b + 1)));
+			revealSquare(document.getElementById((a - 1) + ":" + (b + 1)));
+			revealSquare(document.getElementById((a + 1) + ":" + (b - 1)));
+		}
+	}
+}
+
+function checkFlag (target) {
+	if (target == undefined) {
+		return "NN";
+	}
+	var flag = "";
+	var bomb = "";
+	if (target.src.match(/flag\.png/)) {
+		flag = "Y";
+	} else {
+		flag = "N";
 	}
 	if (target.attr_type == "bomb") {
-		target.src = "images/bomb.png";
-//		gameOver();
-		return;
+		bomb = "Y";
+	} else {
+		bomb = "N";
 	}
-	if (!(target.src.match(/unknown\.png/))) {
-		return;
-	}
-	if (target.attr_type == 0) {
-
-		var id = target.id;
-		var ids = id.split(":");
-		var a = parseInt(ids[0]);
-		var b = parseInt(ids[1]);
-		var foo = "";
-		var squareToReveal = "";
-
-		target.src = "images/0.png";
-
-		revealSquare(document.getElementById((a - 1) + ":" + b));
-		revealSquare(document.getElementById((a + 1) + ":" + b));
-		revealSquare(document.getElementById(a + ":" + (b - 1)));
-		revealSquare(document.getElementById(a + ":" + (b + 1)));
-
-		revealSquare(document.getElementById((a - 1) + ":" + (b - 1)));
-		revealSquare(document.getElementById((a + 1) + ":" + (b + 1)));
-		revealSquare(document.getElementById((a - 1) + ":" + (b + 1)));
-		revealSquare(document.getElementById((a + 1) + ":" + (b - 1)));
-		return;
-	}
-	if (target.attr_type > 0 && target.attr_type < 9) {
-		target.src = "images/" + target.attr_type + ".png";
-		return;
-	}
+	return flag + bomb;
 }
 
 function deleteBoard (board) {
 	for (var row of board) {
 		for (var square of row) {
-			console.log(square.Id);
 			square.parentNode.removeChild(square);
 		}
 	}
