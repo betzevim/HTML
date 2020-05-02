@@ -9,7 +9,12 @@
 	</style>
 </head>
 <body>
-
+<p>
+	Note! There is currently an unsquashed bug running around that will cause players<br>
+	to be unable to start a new game. If this happens, just reload the page and it should<br>
+	go back to normal. If the problem persists, press <kbd>shift ctrl c</kbd>, go into the<br>
+	window "console", and email whatever it says there to betzevim@gmail.com<br><br>
+</p>
 <form>
 	<label for="width">Width:</label><br>
 	<input type="text" id="width" name="width" value="30"><br>
@@ -27,6 +32,9 @@
 var width = 29;
 var height = 15;
 var board = [];
+
+var gameOver = false
+
 newGame();
 
 function newGame () {
@@ -39,6 +47,8 @@ function newGame () {
 	height = document.getElementById("height").value;
 
 	var num_bombs = 0;
+
+	gameOver = false;
 
 	for (var a = 0; a<height; a++) {
 		board[a] = [];
@@ -62,7 +72,6 @@ function newGame () {
 		divBoard.appendChild(br);
 	}
 
-	console.log(num_bombs);
 
 	for (var a = 0; a<height; a++) {
 		for (var b = 0; b<width; b++) {
@@ -98,7 +107,9 @@ function onclick (e) {
 	var flRegex = /flag\.png/;
 	var boRegex = /bomb\.png/;
 
-
+	if (gameOver) {
+		return false;
+	}
 	if (e.button == 0) { // Left click
 		revealSquare(e.target);
 	} else { // Right click
@@ -128,7 +139,7 @@ function revealSquare (target) {
 		return;
 	}
 	if (type == "bomb") { // This handles when you click on a bomb
-//		gameOver(target);
+		loseGame(target);
 		target.src = "images/bomb.png";
 		return;
 	}
@@ -163,23 +174,21 @@ function revealSquare (target) {
 		document.getElementById((a + 1) + ":" + (b - 1))
 	];
 
-	var flaggedBombs = 0;
+	var flags = 0;
 	var wronglyFlagged = false;
 
-	console.log(surroundingSquares);
 
 	for (square in surroundingSquares) {
 		var result = checkFlag(surroundingSquares[square]);
 		switch (result) {
 			case ("YY"):
-				flaggedBombs ++;
+				flags ++;
 				break;
 			case ("YN"):
-				flaggedBombs ++;
+				flags ++;
 				wronglyFlagged = true;
 				break;
 			case ("NY"):
-				flaggedBombs ++;
 				wronglyFlagged = true;
 				break;
 			case ("NN"):
@@ -187,10 +196,9 @@ function revealSquare (target) {
 		}
 	}
 
-
-	if (flaggedBombs == src.match(/.*(.)\.png/)[1]) {
+	if (flags == (src.match(/.*(.)\.png/)[1])) {
 		if (wronglyFlagged) {
-//			gameOver();
+			loseGame();
 		} else if (!(target.attr_revealed)) {
 			target.attr_revealed = true;
 			revealSquare(document.getElementById((a - 1) + ":" + b));
@@ -231,6 +239,10 @@ function deleteBoard (board) {
 			square.parentNode.removeChild(square);
 		}
 	}
+}
+
+function loseGame (target) {
+	gameOver = true;
 }
 
 </script>
