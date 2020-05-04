@@ -111,7 +111,7 @@ function onclick (e) {
 		return false;
 	}
 	if (e.button == 0) { // Left click
-		revealSquare(e.target);
+		revealSquare(e.target, true);
 	} else { // Right click
 		if (e.target.src.match(unRegex)) {
 			e.target.src = "images/flag.png";
@@ -122,7 +122,7 @@ function onclick (e) {
 	return false; // To prevent the context menu from appearing
 }
 
-function revealSquare (target) {
+function revealSquare (target, click) {
 
 	if (target == undefined) { // This handles when there's a zero next to the edge, and it tries to reveal a nonexistent location
 		return;
@@ -147,69 +147,70 @@ function revealSquare (target) {
 		if (type == 0) {
 			target.src = "images/0.png";
 
-			revealSquare(document.getElementById((a - 1) + ":" + b));
-			revealSquare(document.getElementById((a + 1) + ":" + b));
-			revealSquare(document.getElementById(a + ":" + (b - 1)));
-			revealSquare(document.getElementById(a + ":" + (b + 1)));
+			revealSquare(document.getElementById((a - 1) + ":" + b), false);
+			revealSquare(document.getElementById((a + 1) + ":" + b), false);
+			revealSquare(document.getElementById(a + ":" + (b - 1)), false);
+			revealSquare(document.getElementById(a + ":" + (b + 1)), false);
 
-			revealSquare(document.getElementById((a - 1) + ":" + (b - 1)));
-			revealSquare(document.getElementById((a + 1) + ":" + (b + 1)));
-			revealSquare(document.getElementById((a - 1) + ":" + (b + 1)));
-			revealSquare(document.getElementById((a + 1) + ":" + (b - 1)));
+			revealSquare(document.getElementById((a - 1) + ":" + (b - 1)), false);
+			revealSquare(document.getElementById((a + 1) + ":" + (b + 1)), false);
+			revealSquare(document.getElementById((a - 1) + ":" + (b + 1)), false);
+			revealSquare(document.getElementById((a + 1) + ":" + (b - 1)), false);
 		} else {
 			target.src = "images/" + type + ".png";
 		}
 	}
 
-
-	var surroundingSquares = [
-		document.getElementById((a - 1) + ":" + b),
-		document.getElementById((a + 1) + ":" + b),
-		document.getElementById(a + ":" + (b - 1)),
-		document.getElementById(a + ":" + (b + 1)),
-
-		document.getElementById((a - 1) + ":" + (b - 1)),
-		document.getElementById((a + 1) + ":" + (b + 1)),
-		document.getElementById((a - 1) + ":" + (b + 1)),
-		document.getElementById((a + 1) + ":" + (b - 1))
-	];
-
-	var flags = 0;
-	var wronglyFlagged = false;
-
-
-	for (square in surroundingSquares) {
-		var result = checkFlag(surroundingSquares[square]);
-		switch (result) {
-			case ("YY"):
-				flags ++;
-				break;
-			case ("YN"):
-				flags ++;
-				wronglyFlagged = true;
-				break;
-			case ("NY"):
-				wronglyFlagged = true;
-				break;
-			case ("NN"):
-			break;
+	if (click) {
+		var surroundingSquares = [
+			document.getElementById((a - 1) + ":" + b),
+			document.getElementById((a + 1) + ":" + b),
+			document.getElementById(a + ":" + (b - 1)),
+			document.getElementById(a + ":" + (b + 1)),
+	
+			document.getElementById((a - 1) + ":" + (b - 1)),
+			document.getElementById((a + 1) + ":" + (b + 1)),
+			document.getElementById((a - 1) + ":" + (b + 1)),
+			document.getElementById((a + 1) + ":" + (b - 1))
+		];
+	
+		var flags = 0;
+		var wronglyFlagged = false;
+	
+	
+		for (square in surroundingSquares) {
+			var result = checkFlag(surroundingSquares[square]);
+			switch (result) {
+				case ("YY"):
+					flags ++;
+					break;
+				case ("YN"):
+					flags ++;
+					wronglyFlagged = true;
+					break;
+				case ("NY"):
+					wronglyFlagged = true;
+					break;
+				case ("NN"):
+					break;
+			}
 		}
-	}
-
-	if (flags == (src.match(/.*(.)\.png/)[1])) {
-		if (wronglyFlagged) {
-			loseGame();
-		} else if (!(target.attr_revealed)) {
-			target.attr_revealed = true;
-			revealSquare(document.getElementById((a - 1) + ":" + b));
-			revealSquare(document.getElementById((a + 1) + ":" + b));
-			revealSquare(document.getElementById(a + ":" + (b - 1)));
-			revealSquare(document.getElementById(a + ":" + (b + 1)));
-
-			revealSquare(document.getElementById((a - 1) + ":" + (b - 1)));
-			revealSquare(document.getElementById((a + 1) + ":" + (b + 1)));
-			revealSquare(document.getElementById((a - 1) + ":" + (b + 1)));
-			revealSquare(document.getElementById((a + 1) + ":" + (b - 1)));
+	
+		if (flags == (src.match(/.*(.)\.png/)[1])) {
+			if (wronglyFlagged) {
+				loseGame();
+			} else if (!(target.attr_revealed)) {
+				target.attr_revealed = true;
+				revealSquare(document.getElementById((a - 1) + ":" + b), false);
+				revealSquare(document.getElementById((a + 1) + ":" + b), false);
+				revealSquare(document.getElementById(a + ":" + (b - 1)), false);
+				revealSquare(document.getElementById(a + ":" + (b + 1)), false);
+	
+				revealSquare(document.getElementById((a - 1) + ":" + (b - 1)), false);
+				revealSquare(document.getElementById((a + 1) + ":" + (b + 1)), false);
+				revealSquare(document.getElementById((a - 1) + ":" + (b + 1)), false);
+				revealSquare(document.getElementById((a + 1) + ":" + (b - 1)), false);
+			}
 		}
 	}
 }
@@ -243,6 +244,17 @@ function deleteBoard (board) {
 
 function loseGame (target) {
 	gameOver = true;
+	for (var row of board) {
+		for (var square of row) {
+			if (square.attr_type == "bomb") {
+				if (!square.src.match(/flag\.png/)) {
+					square.src = "images/bomb.png";
+				} else {
+//					square.src = "images/xflag.png";
+				}
+			}
+		}
+	}
 }
 
 </script>
